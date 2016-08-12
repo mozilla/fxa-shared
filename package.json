@@ -1,0 +1,25 @@
+{
+  "name": "fxa-utils",
+  "version": "1.0.0",
+  "description": "Shared module for FxA repositories",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla/fxa-utils.git"
+  },
+  "keywords": [
+    "fxa"
+  ],
+  "author": "Mozilla (https://mozilla.org/)",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/mozilla/fxa-utils/issues"
+  },
+  "homepage": "https://github.com/mozilla/fxa-utils#readme",
+  "devDependencies": {
+    "tap": "6.3.2"
+  }
+}
