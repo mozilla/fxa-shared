@@ -8,6 +8,4 @@
 
 ## Publishing new version
 
-Install [np](https://github.com/sindresorhus/np), run `np [new_version_here]`.
-
-
+Install the [np](https://github.com/sindresorhus/np) tool, run `np [new_version_here]`.
