@@ -15,6 +15,8 @@ test('default usage', function (t) {
   t.equal(format(Date.now() - 10), 'a few seconds ago', 'default language if no header');
   t.equal(format(Date.now() - 10, 'qu,ru;q=0.8,en-GB;q=0.5,en;q=0.3'), 'несколько секунд назад', 'ru translation with good header');
   t.equal(format(Date.now() - 10, 'ru'), 'несколько секунд назад', 'ru translation');
+  t.equal(format(Date.now() - 10, 'ru', { removeSuffix: true }), 'несколько секунд', 'ru removes ago suffix');
+  t.equal(format(Date.now() - 10, 'en', { removeSuffix: true }), 'a few seconds', 'en removes ago suffix');
   t.equal(format(Date.now() - 10, 'qu'), 'a few seconds ago', 'default language if lang not supported');
   t.equal(format(Date.now() - 10, 'q=0.8'), 'a few seconds ago', 'default language if no locales in header');
   t.equal(format(Date.now() - 10, 'es-mx, ru'), 'hace unos segundos', 'LCID string takes priority');
