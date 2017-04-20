@@ -37,10 +37,18 @@ module.exports = function (options) {
      *
      * @param {Number} timestamp
      * @param {String} acceptLanguageHeader
+     * @param {Object} [options]
+     * @param {Boolean} [options.removeSuffix]
+     *  If 'true' then it removes the 'ago' suffix from the localized string.
+     *  Details at: http://momentjs.com/docs/#/displaying/fromnow/
      * @returns {String} Returns a localized string based on a given timestamp.
      * Returns an empty string if no timestamp provided.
      */
-    format: function format(timestamp, acceptLanguageHeader) {
+    format: function format(timestamp, acceptLanguageHeader, options) {
+      options = options || {};
+
+      var removeSuffix = options.removeSuffix || false;
+
       if (! timestamp) {
         return '';
       }
@@ -66,7 +74,7 @@ module.exports = function (options) {
       // set the moment locale to determined `language`.
       lastAccessTime.locale(language);
       // return a formatted `timeago` type string
-      return lastAccessTime.fromNow();
+      return lastAccessTime.fromNow(removeSuffix);
     }
   }
 
