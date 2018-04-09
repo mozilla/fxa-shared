@@ -141,8 +141,24 @@ module.exports = {
    *                          but here `group` can be a string or a function. If it's
    *                          a function, it will be passed the matched `eventCategory`
    *                          as its argument and should return the group string.
+   *
+   * @returns {Function}      The mapper function.
    */
   initialize (services, events, fuzzyEvents) {
+    /**
+     * Map from a source event and it's associated data to an amplitude event.
+     *
+     * @param {Object} event      The source event to map from.
+     *
+     * @param {String} event.type The type of the event.
+     *
+     * @param {Number} event.time The time of the event in epoch-milliseconds.
+     *
+     * @param {Object} data       All of the data associated with the event. This
+     *                            parameter supports many properties that are too
+     *                            numerous to list here, but may be discerned with
+     *                            ease by perusing the code.
+     */
     return (event, data) => {
       if (! event || ! data) {
         return;
