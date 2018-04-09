@@ -123,6 +123,10 @@ module.exports = {
    *
    *   https://amplitude.zendesk.com/hc/en-us/articles/204771828-HTTP-API
    *
+   * And you can see our event taxonomy here:
+   *
+   *   https://docs.google.com/spreadsheets/d/1G_8OJGOxeWXdGJ1Ugmykk33Zsl-qAQL05CONSeD4Uz4
+   *
    * @param {Object} services An object of client-id:service-name mappings.
    *
    * @param {Object} events   An object of name:definition event mappings, where
