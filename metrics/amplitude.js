@@ -8,7 +8,7 @@ let APP_VERSION;
 try {
   APP_VERSION = /^[0-9]+\.([0-9]+)\./.exec(require('../../../package.json').version)[1];
 } catch (err) {
-};
+}
 
 const DAY = 1000 * 60 * 60 * 24;
 const WEEK = DAY * 7;
@@ -107,7 +107,7 @@ function mapEmailType (eventType, eventCategory, eventTarget, data) {
 }
 
 function mapDisconnectReason (eventType, eventCategory) {
-  if (eventType == 'disconnect_device' && eventCategory) {
+  if (eventType === 'disconnect_device' && eventCategory) {
     return { reason: eventCategory };
   }
 }
