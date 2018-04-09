@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --recursive test",
-    "lint": "eslint *.js email/** l10n/** test/**"
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
