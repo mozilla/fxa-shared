@@ -123,7 +123,7 @@ module.exports = {
    */
   initialize (services, events, fuzzyEvents) {
     /**
-     * Map from a source event and it's associated data to an amplitude event.
+     * Map from a source event and it's associated data to an array of amplitude events.
      *
      * @param {Object} event      The source event to map from.
      *
@@ -180,10 +180,8 @@ module.exports = {
           }
         }
 
-        return pruneUnsetValues({
+        const eventData = {
           op: 'amplitudeEvent',
-          event_type: `${eventGroup} - ${eventType}`,
-          time: event.time,
           user_id: data.uid,
           device_id: data.deviceId,
           session_id: data.flowBeginTime,
@@ -193,10 +191,33 @@ module.exports = {
           region: data.region,
           os_name: data.os,
           os_version: data.osVersion,
-          device_model: data.formFactor,
-          event_properties: mapEventProperties(eventType, eventGroup, eventCategory, eventTarget, data),
-          user_properties: mapUserProperties(eventGroup, eventCategory, data)
-        });
+          device_model: data.formFactor
+        };
+
+        const events = [
+          pruneUnsetValues({
+            ...eventData,
+            event_type: `${eventGroup} - ${eventType}`,
+            time: event.time,
+            event_properties: mapEventProperties(eventType, eventGroup, eventCategory, eventTarget, data),
+            user_properties: mapUserProperties(eventGroup, eventCategory, data)
+          })
+        ];
+
+        if (mapping.after) {
+          eventType = mapping.after.event;
+          eventGroup = mapping.after.group;
+
+          events.push(pruneUnsetValues({
+            ...eventData,
+            event_type: `${eventGroup} - ${eventType}`,
+            time: event.time + 1,
+            event_properties: mapEventProperties(eventType, eventGroup, null, null, data),
+            user_properties: mapUserProperties(eventGroup, null, data)
+          }));
+        }
+
+        return events;
       }
     };
 

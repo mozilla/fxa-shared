@@ -49,6 +49,14 @@ describe('metrics/amplitude:', () => {
         sourceEvent2: {
           group: amplitude.GROUPS.sms,
           event: 'blee'
+        },
+        afterEvent: {
+          group: amplitude.GROUPS.login,
+          event: 'forgot_complete',
+          after: {
+            group: amplitude.GROUPS.login,
+            event: 'complete'
+          }
         }
       }, new Map([
         [ /3/, {
@@ -129,7 +137,7 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct result', () => {
-        assert.deepEqual(result, {
+        assert.deepEqual(result, [ {
           country: 'c',
           device_id: 'd',
           device_model: 'm',
@@ -165,7 +173,7 @@ describe('metrics/amplitude:', () => {
             utm_source: 'x',
             utm_term: 'y'
           }
-        });
+        } ]);
       });
     });
 
@@ -185,7 +193,7 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct result', () => {
-        assert.deepEqual(result, {
+        assert.deepEqual(result, [ {
           device_id: 'a',
           event_properties: {},
           event_type: 'fxa_login - targetEvent3',
@@ -196,7 +204,7 @@ describe('metrics/amplitude:', () => {
           user_properties: {
             flow_id: 'c'
           }
-        });
+        } ]);
       });
     });
 
@@ -208,7 +216,8 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct event type', () => {
-        assert.equal(result.event_type, 'fxa_reg - targetEvent4');
+        assert.lengthOf(result, 1);
+        assert.equal(result[0].event_type, 'fxa_reg - targetEvent4');
       });
     });
 
@@ -220,7 +229,8 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct event type', () => {
-        assert.equal(result.event_type, 'fxa_login - glick.gluck');
+        assert.lengthOf(result, 1);
+        assert.equal(result[0].event_type, 'fxa_login - glick.gluck');
       });
     });
 
@@ -232,8 +242,9 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct event data', () => {
-        assert.equal(result.event_type, 'fxa_connect_device - cadEvent');
-        assert.deepEqual(result.event_properties, {
+        assert.lengthOf(result, 1);
+        assert.equal(result[0].event_type, 'fxa_connect_device - cadEvent');
+        assert.deepEqual(result[0].event_properties, {
           connect_device_flow: 'sms',
           connect_device_os: 'ios'
         });
@@ -256,8 +267,9 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct event data', () => {
-        assert.equal(result.event_type, 'fxa_email - emailEvent');
-        assert.deepEqual(result.event_properties, {
+        assert.lengthOf(result, 1);
+        assert.equal(result[0].event_type, 'fxa_email - emailEvent');
+        assert.deepEqual(result[0].event_properties, {
           email_provider: 'foo',
           email_sender: 'ses',
           email_service: 'fxa-email-service',
@@ -276,8 +288,9 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct event data', () => {
-        assert.equal(result.event_type, 'fxa_pref - disconnect_device');
-        assert.deepEqual(result.event_properties, { reason: 'wibble' });
+        assert.lengthOf(result, 1);
+        assert.equal(result[0].event_type, 'fxa_pref - disconnect_device');
+        assert.deepEqual(result[0].event_properties, { reason: 'wibble' });
       });
     });
 
@@ -289,8 +302,9 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct event data', () => {
-        assert.equal(result.event_type, 'fxa_pref - newsletterEvent');
-        assert.deepEqual(result.user_properties, { newsletter_state: 'subscribed' });
+        assert.lengthOf(result, 1);
+        assert.equal(result[0].event_type, 'fxa_pref - newsletterEvent');
+        assert.deepEqual(result[0].user_properties, { newsletter_state: 'subscribed' });
       });
     });
 
@@ -302,11 +316,12 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct event data', () => {
-        assert.deepEqual(result.event_properties, {
+        assert.lengthOf(result, 1);
+        assert.deepEqual(result[0].event_properties, {
           oauth_client_id: 'gribble',
           service: 'undefined_oauth'
         });
-        assert.deepEqual(result.user_properties, { '$append': { fxa_services_used: 'undefined_oauth' } });
+        assert.deepEqual(result[0].user_properties, { '$append': { fxa_services_used: 'undefined_oauth' } });
       });
     });
 
@@ -318,8 +333,9 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct event data', () => {
-        assert.deepEqual(result.event_properties, { service: 'sync' });
-        assert.deepEqual(result.user_properties, { '$append': { fxa_services_used: 'sync' } });
+        assert.lengthOf(result, 1);
+        assert.deepEqual(result[0].event_properties, { service: 'sync' });
+        assert.deepEqual(result[0].user_properties, { '$append': { fxa_services_used: 'sync' } });
       });
     });
 
@@ -331,8 +347,25 @@ describe('metrics/amplitude:', () => {
       });
 
       it('returned the correct event data', () => {
-        assert.deepEqual(result.event_properties, {});
-        assert.deepEqual(result.user_properties, {});
+        assert.lengthOf(result, 1);
+        assert.deepEqual(result[0].event_properties, {});
+        assert.deepEqual(result[0].user_properties, {});
+      });
+    });
+
+    describe('transform an event with an after-event:', () => {
+      let result;
+
+      before(() => {
+        result = transform({ type: 'afterEvent', time: 42 }, {});
+      });
+
+      it('returned the correct event data', () => {
+        assert.lengthOf(result, 2);
+        assert.equal(result[0].event_type, 'fxa_login - forgot_complete');
+        assert.equal(result[0].time, 42);
+        assert.equal(result[1].event_type, 'fxa_login - complete');
+        assert.equal(result[1].time, 43);
       });
     });
   });
