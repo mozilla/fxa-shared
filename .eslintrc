@@ -9,3 +9,6 @@ rules:
   handle-callback-err: off
   semi: [2, "always"]
   quotes: off
+
+parserOptions:
+  ecmaVersion: 2018
